@@ -21,13 +21,28 @@ class BloomFilter:
             expected_elements (int): Number of items you expect to add (n)
             false_positive_rate (float): Desired false positive probability (e.g. 0.01 = 1%)
         """
+        if expected_elements <= 0:
+            raise ValueError("expected_elements must be > 0")
+        if not (0 < false_positive_rate < 1):
+            raise ValueError("false_positive_rate must be between 0 and 1 (exclusive)")
 
+        self.expected_elements = expected_elements
+        self.false_positive_rate = false_positive_rate
 
-    def _calculate_size(self):
+        self.size = self._calculate_size()           # m = bit array size
+        self.num_hashes = self._calculate_num_hashes()  # k = number of hashes
+
+        self.bit_array = [False] * self.size
+
+        print(f"BloomFilter created -> bits: {self.size:,} | hashes: {self.num_hashes} | "
+              f"expected items: {expected_elements} | target FP: {false_positive_rate}")
+
+    def _calculate_size(self) -> int:
         """
         Optimal bit array size m
         """
-        pass
+        m = (-self.expected_elements * math.log(self.false_positive_rate)) / (math.log(2) ** 2)
+        return int(math.ceil(m))
 
 
     def _calculate_num_hashes(self):
