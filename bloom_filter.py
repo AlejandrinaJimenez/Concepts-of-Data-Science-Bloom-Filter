@@ -92,6 +92,7 @@ class BloomFilter:
 
     # Convenience aliases 
     insert = add
+    __contains__ = contains   # allows: if word in bf
 
     def add_many(self, items: List[Any]) -> None:
         """
@@ -115,10 +116,12 @@ class BloomFilter:
         }
         return current_state
 
-    def __str__(self):
-        pass
-
-
+    def __str__(self) -> str:
+        info = self.get_info()
+        info_str = (f"BloomFilter(n={info['expected_elements']:,}, p={info['false_positive_rate']}, "
+                f"m={info['bit_array_size']:,}, k={info['num_hash_functions']}, "
+                f"fill={info['fill_ratio']})")
+        return info_str
 
 if __name__ == "__main__":
     print("=== Bloom Filter Quick Demo ===\n")
@@ -130,7 +133,7 @@ if __name__ == "__main__":
     bf.add(12345)
 
     print("Contains 'apple'?", bf.contains("apple"))
-   # print("Contains 'orange'?", "orange" in bf)  
+    print("Contains 'orange'?", "orange" in bf)  
 
     words = ["python", "bloom", "filter", "hash", "test"]
     bf.add_many(words)
