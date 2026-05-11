@@ -69,22 +69,27 @@ class BloomFilter:
         return positions
 
 
-    def add(self, item: Any):
+    def add(self, item: Any) -> None:
         """
         Add an item to the filter
         """
-        pass
+        positions = self._get_hash_positions(item)
+        for pos in positions:
+            self.bit_array[pos] = True
         
-
-    def contains(self, item: Any):
+        
+    def contains(self, item: Any) -> bool:
         """
         Check if item is (probably) in the filter.
         Returns False -> definitely not present
         Returns True -> possibly present (may be false positive)
         """
-        pass
+        positions = self._get_hash_positions(item)
+        for pos in positions:
+            if not self.bit_array[pos]:
+                return False
+        return True
 
-  
 
     def add_many(self, items: List[Any]):
         """
