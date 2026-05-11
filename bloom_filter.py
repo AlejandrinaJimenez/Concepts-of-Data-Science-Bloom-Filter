@@ -45,17 +45,29 @@ class BloomFilter:
         return int(math.ceil(m))
 
 
-    def _calculate_num_hashes(self):
+    def _calculate_num_hashes(self) -> int:
         """
         Optimal number of hash functions k
         """
-        pass
+        k = (self.size/self.expected_elements)*math.log(2)
+        return int(math.ceil(k))
 
-    def _get_hash_positions(self, item: Any):
+    def _get_hash_positions(self, item: Any) -> List[int]:
         """
         Return list of positions in the bit array for this item
         """
-        pass
+        positions = []
+        item_bytes = str(item).encode('utf-8')
+
+        for i in range(self.num_hashes):
+            # Different hash each time by adding salt i
+            hash_obj = hashlib.md5(item_bytes + str(i).encode())
+            hash_int = int(hash_obj.hexdigest(), 16)
+            pos = hash_int % self.size
+            positions.append(pos)
+        
+        return positions
+
 
     def add(self, item: Any):
         """
@@ -101,7 +113,7 @@ if __name__ == "__main__":
     bf.add(12345)
 
     print("Contains 'apple'?", bf.contains("apple"))
-    print("Contains 'orange'?", "orange" in bf)  
+   # print("Contains 'orange'?", "orange" in bf)  
 
     words = ["python", "bloom", "filter", "hash", "test"]
     bf.add_many(words)
