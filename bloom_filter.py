@@ -90,18 +90,30 @@ class BloomFilter:
                 return False
         return True
 
+    # Convenience aliases 
+    insert = add
 
-    def add_many(self, items: List[Any]):
+    def add_many(self, items: List[Any]) -> None:
         """
         Add a list of items efficiently
         """
-        
+        for item in items:
+             self.add(item)
 
-    def get_info(self):
+    def get_info(self) -> dict:
         """
         Return current state information
         """
-        pass
+        filled = sum(1 for bit in self.bit_array if bit)
+        current_state = {
+            "expected_elements": self.expected_elements,
+            "false_positive_rate": self.false_positive_rate,
+            "bit_array_size": self.size,
+            "num_hash_functions": self.num_hashes,
+            "bits_set": filled,
+            "fill_ratio": round(filled / self.size, 4)
+        }
+        return current_state
 
     def __str__(self):
         pass
