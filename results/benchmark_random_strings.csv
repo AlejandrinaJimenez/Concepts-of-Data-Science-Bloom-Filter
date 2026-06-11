@@ -1,0 +1,6 @@
+dataset,num_elements,insert_time_sec,search_time_sec,bit_array_size,num_hashes
+Random_Strings,10000,0.071823,0.070731,95851,7
+Random_Strings,50000,0.357666,0.073031,479253,7
+Random_Strings,100000,0.741689,0.074252,958506,7
+Random_Strings,250000,1.939188,0.078023,2396265,7
+Random_Strings,500000,3.97801,0.080134,4792530,7

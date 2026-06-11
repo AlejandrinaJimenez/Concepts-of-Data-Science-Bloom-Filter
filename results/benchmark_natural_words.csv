@@ -1,0 +1,6 @@
+dataset,num_elements,insert_time_sec,search_time_sec,bit_array_size,num_hashes
+Natural_Words,10000,0.077317,0.073035,95851,7
+Natural_Words,50000,0.387921,0.081663,479253,7
+Natural_Words,100000,0.828675,0.089728,958506,7
+Natural_Words,250000,2.0101,0.081232,2396265,7
+Natural_Words,500000,3.792268,0.08198,4792530,7

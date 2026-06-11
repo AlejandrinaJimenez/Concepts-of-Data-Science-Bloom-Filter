@@ -1,0 +1,6 @@
+dataset,num_elements,insert_time_sec,search_time_sec,bit_array_size,num_hashes
+DNA_kmers,10000,0.080535,0.073678,95851,7
+DNA_kmers,50000,0.390587,0.078964,479253,7
+DNA_kmers,100000,0.817492,0.088177,958506,7
+DNA_kmers,250000,2.027969,0.081792,2396265,7
+DNA_kmers,500000,4.119968,0.082024,4792530,7
