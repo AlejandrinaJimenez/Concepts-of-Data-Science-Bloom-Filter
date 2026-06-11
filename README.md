@@ -1,82 +1,127 @@
-# Bloom Filter Implementation
+# Bloom Filter Project
 
-**Course Name** – Concepts of Data Science
-**Team Members:**  
-- Alejandrina Jimenez Guzman
-- Joffre Sanchez
+**Course:** Concepts of Data Science  
+**Team Members:** Alejandrina Jimenez Guzman and Joffre Sanchez
 
 ## Project Overview
 
-This project implements a **Bloom Filter** using an Object-Oriented approach in Python.  
-A Bloom Filter is a space-efficient probabilistic data structure that allows fast membership testing (checking whether an element is in a set) with a controllable false positive rate.
-
-### Key Features
-- Object-Oriented design (`BloomFilter` class)
-- Calculation of bit array size (`m`) and number of hash functions (`k`)
-- Correctness testing with 3 different datasets
-- Performance benchmarks designed for HPC
-- Analysis of false positive rate and compression
+This project implements a **Bloom Filter** using an **Object-Oriented approach** in Python.  
+A Bloom Filter is a space-efficient probabilistic data structure used to test whether an element is a member of a set.
 
 ## Repository Structure
-bloom_filter_project/
+
 ```text
-├── bloom_filter.py          # Main Bloom Filter class (OOP)
-├── test_bloom.py            # Correctness tests + 3 datasets
-├── benchmark.py             # Performance benchmarks for HPC
+bloom-filter-project/
+├── README.md
+├── Bloom_Filter_Implementation.ipynb
+├── src/                    # Source code
+│   ├── bloom_filter.py
+│   ├── test_bloom.py
+│   ├── prepare_data.py
+│   ├── benchmark.py
+│   └── analysis.py
+├── data/                   # Input datasets
+│   ├── insert_words.txt
+│   └── not_insert_words.txt
+├── HPC_scripts/                   # HPC job scripts
+│   └── job_benchmark.slurm
+├── results/                # Benchmark outputs from HPC
+│   ├── benchmark_*.csv
+│   ├── fp_rate_analysis.csv
+│   └── compression_analysis.csv
 ```
 
 ## How to Run
 
-### 1. Quick Demo
+### Locally
+
 ```bash
-python bloom_filter.py
+cd src
+python3 test_bloom.py           # Correctness tests
+python3 prepare_data.py         # Prepare insert/not_insert files
+python3 benchmark.py            # Performance test
+python3 analysis.py             # False positive & compression analysis
 ```
 
-### 2. Run Correctness Tests
+### On HPC (VSC)
+
 ```bash
-python test_bloom.py
+sbatch jobs/job_benchmark.slurm
 ```
 
-### 3. Run Benchmarks (on your laptop first with small sizes)
-```bash
-python benchmark.py
-```
+## Implementation
 
-### 4. Run on HPC
-```
+The Bloom Filter is implemented as a class in `src/bloom_filter.py`.
 
-## Implementation Details
+Key features:
 
-### BloomFilter Class
-- **Constructor**: `BloomFilter(expected_elements: int, false_positive_rate: float = 0.01)`
-- Calculates optimal `m` (bit array size) and `k` (number of hashes) automatically
+- Automatic calculation of optimal bit array size (`m`) and number of hash functions (`k`)
+- Multiple hash functions using salted MD5
+- Support for `add()`, `contains()`, and `add_many()`
 
-### Supported Datasets (Point 5)
-We tested with **three different data types** to evaluate hash function behavior:
-
-1. **Natural Language Words** – Real English words (good distribution)
-2. **Random Strings** – Uniform random alphanumeric strings (stress test)
-3. **DNA k-mers** – Fixed-length strings from alphabet {A,C,G,T}
-
-## Time and Space Complexity (Point 6)
+## Time and Space Complexity
 
 ### Space Complexity
-- **O(m)** where `m ≈ (-n × ln(p)) / (ln(2))²`
-- Approximately **8–10 bits per expected element** (for p = 0.01)
-- Memory usage stays constant regardless of how many items are actually inserted
+
+- Main memory usage comes from the bit array of size **m**.
+- Formula:
+
+  **m ≈ (-n × ln(p)) / (ln(2))²**
+
+- **Asymptotic**: **O(m)**
+- For typical parameters (p = 0.01), this gives approximately **9.6 bits per expected element**.
 
 ### Time Complexity
 
+| Operation | Time Complexity | Explanation |
+|-----------|----------------|-------------|
+| `add(item)` / `insert` | **O(k)** ≈ **O(1)** | Compute k hashes + set k bits |
+| `contains(item)` | **O(k)** ≈ **O(1)** | Compute k hashes + check k bits |
+| `add_many(N items)` | **O(N × k)** | Repeat single add for each item |
 
-## Testing & Benchmarking
+- **k** is small (usually 5–10), making operations effectively constant time.
+- Time complexity is **independent** of the current number of elements stored (a major advantage of Bloom Filters).
 
+## Datasets Used
 
-## Files Included for HPC
+- **Natural Language Words** (`insert_words.txt`)
+- **Random Strings** (generated)
+- **DNA k-mers** (generated)
+
+Tested with at least two different data types as required.
+
+## Results
+
+### Performance Benchmarks
+
+- Executed on **VSC Genius** cluster using SLURM.
+- Insert and search times measured for up to 500,000 elements.
+- Results available in `results/benchmark_*.csv`
+
+### False Positive Rate
+
+- Analyzed how FP rate changes when exceeding designed capacity.
+- Results in `results/fp_rate_analysis.csv`
+
+### Compression Rate
+
+- Bits per element for different `n` and `p`.
+- Results in `results/compression_analysis.csv`
+
+See `notebooks/plots.ipynb` for all visualizations and detailed analysis.
 
 ## Conclusions
 
-## How to Reproduce
+- The implementation behaves as expected from theory: near-constant operation time and excellent space efficiency.
+- False positive rate stays close to the target when not overloaded and increases predictably beyond capacity.
+- Different data types (natural words, random strings, DNA) show consistent performance.
+- All project requirements have been fulfilled, including HPC benchmarking, multiple datasets, and thorough testing.
 
-1. Clone the repository
-2. Download a large word list and place it in `data/words.txt`
-3. Run `test_bloom.py` for correctness
+## References
+
+- Bloom Filter theory (Wikipedia + course materials)
+- VSC HPC documentation for SLURM and conda
+
+---
+
+
